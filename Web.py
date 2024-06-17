@@ -1,20 +1,20 @@
-import socket
-import threading
+from socket import *
+from threading import *
 
 host = ''
 port = 8888
 
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s = socket(socket.AF_INET, socket.SOCK_STREAM)
 s.bind((host, port))
 s.listen(1)
 
 while True:
     clientsocket, address = s.accept()
 
-
-    reveived_data = clientsocket.recv(1024)
+    #For now, this is discarded. When we check if the connection is correct we need to look at this.
+    reveived_data = clientsocket.recv(1024).decode()
     
-    http_response = b"""\
+    http_response = """
 HTTP/1.1 200 OK
 <html>
 
@@ -35,5 +35,5 @@ HTTP/1.1 200 OK
 
 </html>
 """
-    clientsocket.sendall(http_response)
+    clientsocket.send(http_response.encode())
     clientsocket.close()
