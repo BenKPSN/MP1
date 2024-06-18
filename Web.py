@@ -10,23 +10,21 @@ s.listen(5)
 print(s)
 
 
-def client_thread(conn):
-    while True:
-      data = conn.recv(4096)
+def client_thread(conn,data):
 
-      print(data)
-      # CHECK STATUS CODES
+    print(data)
+    # CHECK STATUS CODES
 
 
 
 
-      test = open('test.html','rb')
-      file = test.read()
-      test.close()
+    test = open('test.html','rb')
+    file = test.read()
+    test.close()
 
-      head = b"HTTP/1.1 200 OK\n"
-      response = head + file
-      conn.send(response)
+    head = b"HTTP/1.1 200 OK\n"
+    response = head + file
+    conn.send(response)
 
 
     conn.close()
@@ -35,8 +33,10 @@ def client_thread(conn):
 
 while True:
     clientsocket, address = s.accept()
-
-    client_thread(clientsocket)
+    data = clientsocket.recv(4096)
+    
+    ct = Thread(target=client_thread,args=(clientsocket,data, ))
+    ct.run()
 
 
 
