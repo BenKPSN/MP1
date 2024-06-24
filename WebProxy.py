@@ -57,12 +57,12 @@ def proxy_check(file):
         return b"good"
 
 #This function is used to check if we have an up to date version of the file for the client.
-def gatherModify(file, time):
+def gatherModify(file, timeModified):
 
     #We first assume we don't and request an up to date version from the server.
     proxysocket = socket(AF_INET, SOCK_STREAM)
     proxysocket.connect(('localhost',8888))
-    sentence = 'GET /' + file + ' HTTP/1.1\r\nIf-Modified-Since: ' + time + '\r\n\r\n'
+    sentence = 'GET /' + file + ' HTTP/1.1\r\nIf-Modified-Since: ' + timeModified + '\r\n\r\n'
     proxysocket.send(sentence.encode())
     result = proxysocket.recv(1024)
     modresult = result.decode()
@@ -70,6 +70,7 @@ def gatherModify(file, time):
     #We then check the received status code.
     firstSpace = modresult.find(' ')
     statusCode = modresult[firstSpace + 1:firstSpace + 4]
+    lastEdit = gmtime(time())
 
     #If we get 200 OK, that means the server has a more up to date version, so we replace our file
     #with this new one.
@@ -80,7 +81,6 @@ def gatherModify(file, time):
         check = open(file, 'w')
         check.write(modresult)
         check.close()
-        lastEdit = time()
     
     #Here for debug. Can remove.
     else:
