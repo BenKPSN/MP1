@@ -70,7 +70,6 @@ def gatherModify(file, timeModified):
     #We then check the received status code.
     firstSpace = modresult.find(' ')
     statusCode = modresult[firstSpace + 1:firstSpace + 4]
-    lastEdit = gmtime(time())
 
     #If we get 200 OK, that means the server has a more up to date version, so we replace our file
     #with this new one.
@@ -81,6 +80,8 @@ def gatherModify(file, timeModified):
         check = open(file, 'w')
         check.write(modresult)
         check.close()
+        global lastEdit
+        lastEdit = gmtime(time())
     
     #Here for debug. Can remove.
     else:
