@@ -53,6 +53,7 @@ def proxy_check(file):
         check = open(file, 'a')
         check.write(modresult)
         check.close()
+        global lastEdit
         lastEdit = gmtime(time())
         return b"good"
 
