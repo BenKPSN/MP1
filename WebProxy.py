@@ -76,7 +76,7 @@ def gatherModify(file, timeModified):
     #If we don't, then we got 304 Not Modified, meaning we have the most up to date version.
     if statusCode == "200":
         fileBegin = modresult.find('\r\n\r\n')
-        modresult = modresult[linechar + 4:]
+        modresult = modresult[fileBegin + 4:]
         check = open(file, 'w')
         check.write(modresult)
         check.close()
