@@ -23,8 +23,25 @@ def update_file():
   while True:
     toAdd = input('Please write what to add to the file:')
     #'a' is used to signify it's appending.
-    writer = open('test.html', 'a')
-    writer.write(toAdd)
+    writer.write("""<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title></title>
+  <meta name="author" content="">
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+</head>
+
+<body>
+
+  <p>Congratulations! Your Web Server is Working!</p>
+  <p>%s</p>
+</body>
+
+</html>""" % toAdd)
     writer.close()
     lastEdit = gmtime(time())
 
