@@ -43,6 +43,7 @@ def update_file():
 
 </html>""" % toAdd)
     writer.close()
+    global lastEdit
     lastEdit = gmtime(time())
 
 #This function is the meat and bones of the actual server. When a client connects, they go through this.
