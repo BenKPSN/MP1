@@ -2,9 +2,6 @@ from socket import *
 from threading import *
 from time import *
 
-#NEXT UP: ISSUE WITH UPDATING FILE ON PROXY
-#ISSUE WITH CURL AND TIME MODIFIED. FIGURE OUT. MANUAL TESTING WORKS.
-
 #Global variables
 host = ''
 port = 8888
@@ -15,15 +12,15 @@ lastEdit = gmtime(time())
 s = socket(AF_INET, SOCK_STREAM)
 s.bind((host, port))
 s.listen(5)
-#print(s)
 
 #This function is for debug purposes and in a real server would not exist.
 #It continuously waits for input to add to the test.html file.
 def update_file():
   while True:
     toAdd = input('Please write what to add to the file:')
-    #'w' is used to signify it's appending.
+    #'w' is used to signify it's overwriting.
     writer = open('test.html', 'w')
+    #Stupidly complex but this is the best way to make it look good.
     writer.write("""<!DOCTYPE html>
 <html>
 
@@ -52,7 +49,6 @@ def client_thread(conn):
 
     #Receive data.
     data = conn.recv(4096).decode()
-    #print(data)
     yesModify = True
 
     #Find where the first line of the data (so the actual command) should be.
@@ -96,10 +92,8 @@ def client_thread(conn):
             toSend = open(fileToGrab, 'rb')
             file = toSend.read()
             toSend.close()
-            #print("closed")
             head = b"HTTP/1.1 200 OK\r\n\r\n"
             response = head + file
-            #print("done")
           
           #This except statement only fails if open(fileToGrab, 'rb') gives an error. Meaning
           #the file does not exist.
@@ -109,17 +103,6 @@ def client_thread(conn):
     #For example, POST would cause this to send.
     else:
       response = b"HTTP/1.1 400 Bad Request\r\n\r\n"
-
-
-
-    #test = open('test.html','rb')
-    #file = test.read()
-    #test.close()
-
-    
-
-    #head = b"HTTP/1.1 200 OK\r\n\r\n"
-    #response = head + file
 
     #Whatever our result, we send the result back and close the connection.
     conn.send(response)
@@ -137,5 +120,4 @@ while True:
     clientsocket, address = s.accept()
     
     ct = Thread(target=client_thread,args=(clientsocket, ))
-    #NOT SURE THIS PART WORKS RIGHT
     ct.start()
