@@ -22,7 +22,8 @@ s.listen(5)
 def update_file():
   while True:
     toAdd = input('Please write what to add to the file:')
-    #'a' is used to signify it's appending.
+    #'w' is used to signify it's appending.
+    writer = open('test.html', 'w')
     writer.write("""<!DOCTYPE html>
 <html>
 
