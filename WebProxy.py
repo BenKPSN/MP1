@@ -2,9 +2,6 @@ from socket import *
 from threading import *
 from time import *
 
-#NEXT UP:  ISSUE WITH FILE UPDATES
-#ISSUE WITH CURL AND TIME MODIFIED. FIGURE OUT. MANUAL TESTING WORKS.
-
 #Global variables.
 host = ''
 port = 8889
@@ -15,7 +12,6 @@ lastEdit = gmtime(time())
 s = socket(AF_INET, SOCK_STREAM)
 s.bind((host, port))
 s.listen(5)
-#print(s)
 
 #This is the function that makes this server a proxy.
 def proxy_check(file):
@@ -83,17 +79,11 @@ def gatherModify(file, timeModified):
         check.close()
         global lastEdit
         lastEdit = gmtime(time())
-        
-    
-    #Here for debug. Can remove.
-    else:
-        print("no modification")
 
 #Most of this is identical to client_thread() in Web.py. I'll only comment on the differences.
 def proxy_thread(conn):
 
     data = conn.recv(4096).decode()
-    #print(data)
     firstLine = data.find('\r\n')
     checker = data[:firstLine]
     if checker[0:3] == "GET":
@@ -123,10 +113,8 @@ def proxy_thread(conn):
                     toSend = open(fileToGrab, 'rb')
                     file = toSend.read()
                     toSend.close()
-                    #print("closed")
                     head = b"HTTP/1.1 200 OK\r\n\r\n"
                     response = head + file
-                    #print("done")
                 except:
                     response = b"HTTP/1.1 404 Not Found\r\n\r\n"
         
@@ -136,17 +124,6 @@ def proxy_thread(conn):
     
     else:
       response = b"HTTP/1.1 400 Bad Request\r\n\r\n"
-
-
-
-    #test = open('test.html','rb')
-    #file = test.read()
-    #test.close()
-
-    
-
-    #head = b"HTTP/1.1 200 OK\r\n\r\n"
-    #response = head + file
     conn.send(response)
 
 
@@ -159,5 +136,4 @@ while True:
     clientsocket, address = s.accept()
     
     ct = Thread(target=proxy_thread,args=(clientsocket, ))
-    #NOT SURE THIS PART WORKS RIGHT
     ct.start()
